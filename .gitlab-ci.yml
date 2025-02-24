@@ -17,7 +17,7 @@ lint-pylint-job:
   stage: validation
   script:
     - echo "Linting code by pylint...."
-    - pip install pylint
+    - pip install pylint python-slugify
     - pylint . || exit 1
     - echo "Pylint linter passed."
 

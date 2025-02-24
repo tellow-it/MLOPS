@@ -3,6 +3,10 @@ stages:
   - validation
   - deploy
 
+cache:
+  paths:
+    - ~/.cache/pip
+
 build-job:
   stage: build
   script:
@@ -13,6 +17,7 @@ lint-pylint-job:
   stage: validation
   script:
     - echo "Linting code by pylint...."
+    - pip install pylint
     - pylint . || exit 1
     - echo "Pylint linter passed."
 
@@ -20,6 +25,7 @@ lint-ruff-job:
   stage: validation
   script:
     - echo "Linting code by ruff..."
+    - pip install ruff
     - ruff check
     - echo "Ruff linter passed."
 

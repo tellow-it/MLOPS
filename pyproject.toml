@@ -1,10 +1,11 @@
 [build-system]
 requires = ["flit_core >=3.2,<4"]
 build-backend = "flit_core.buildapi"
+
 [project]
-name = "ml_categorizer_service"
+name = "ml_product_categorizer"
 version = "0.0.1"
-description = "Product categorization service"
+description = "Product categorizer by url"
 authors = [
     { name = "Ivan Tikhonov" },
 ]
@@ -15,6 +16,7 @@ classifiers = [
     "License :: OSI Approved :: MIT License"
 ]
 requires-python = "~=3.12"
+
 
 [tool.ruff]
 exclude = [

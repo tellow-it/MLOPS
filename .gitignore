@@ -1,5 +1,5 @@
-# Data
-/data/
+data/label-studio-data
+data/postgres-data
 
 # Mac OS-specific storage files
 .DS_Store
@@ -171,3 +171,5 @@ cython_debug/
 #  option (not recommended) you can uncomment the following to ignore the entire idea folder.
 .idea/
 s3_data
+
+*.json

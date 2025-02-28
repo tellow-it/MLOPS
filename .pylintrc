@@ -1,0 +1,17 @@
+[MASTER]
+disable=
+    C0114,
+    C0115,
+    C0116,
+    W0718,
+    W0106,
+    W0613,
+    R0801
+
+ignore=.venv, venv
+
+[FORMAT]
+max-line-length=88
+
+[MESSAGES CONTROL]
+disable=too-few-public-methods

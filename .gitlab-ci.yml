@@ -1,0 +1,36 @@
+stages:
+  - build
+  - validation
+  - deploy
+
+cache:
+  paths:
+    - ~/.cache/pip
+
+build-job:
+  stage: build
+  script:
+    - pip install -r requirements.txt
+
+
+lint-pylint-job:
+  stage: validation
+  script:
+    - echo "Linting code by pylint...."
+    - pip install pylint python-slugify
+    - pylint . || exit 1
+    - echo "Pylint linter passed."
+
+lint-ruff-job:
+  stage: validation
+  script:
+    - echo "Linting code by ruff..."
+    - pip install ruff
+    - ruff check
+    - echo "Ruff linter passed."
+
+deploy-job:
+  stage: deploy
+  script:
+    - echo "Deploying application..."
+    - echo "Application successfully deployed."

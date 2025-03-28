@@ -6,7 +6,8 @@ disable=
     W0718,
     W0106,
     W0613,
-    R0801
+    R0801,
+    E0401
 
 ignore=.venv, venv
 

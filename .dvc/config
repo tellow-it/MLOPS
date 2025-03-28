@@ -1,0 +1,14 @@
+[core]
+    remote = local_s3
+['remote "local_s3"']
+    url = s3://dvc-practice/dvc-storage/
+    endpointurl = http://127.0.0.1:9000
+    access_key_id = 
+    secret_access_key = 
+    region = us-east-1
+    use_ssl = false
+['remote "external_s3"']
+    url = s3://iva.tikhonov.gitlab/dvc-storage/
+    endpointurl = https://minio.v-efimov.tech
+    access_key_id = 
+    secret_access_key = 

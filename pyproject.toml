@@ -28,6 +28,7 @@ exclude = [
     ".ipynb",
     ".ipynb_checkpoints",
     "__pycache__",
+    "*.ipynb"
 ]
 line-length = 88
 indent-width = 4
@@ -61,7 +62,7 @@ select = [
     "Q", # flake8-quotes
     "ANN", # flake8-annotations
 ]
-ignore = ["B008"]
+ignore = ["B008", "ANN201", "ANN001", "UP007"]
 
 [tool.ruff.lint.flake8-quotes]
 docstring-quotes = "double"

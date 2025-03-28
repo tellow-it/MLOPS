@@ -1,5 +1,6 @@
 data/label-studio-data
 data/postgres-data
+*.parquet
 
 # Mac OS-specific storage files
 .DS_Store

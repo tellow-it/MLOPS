@@ -5,8 +5,8 @@ stages:
     deps:
     - path: src/unzip_dataset.py
       hash: md5
-      md5: a40ebf16f286dd7bed9226e310582e08
-      size: 917
+      md5: e6d0c9736ca63a4c5e61a3847e41d595
+      size: 862
     params:
       src/params.py:
         Dataset.save_unzip_dataset_dir: data/unzip/labeled_dataset
@@ -52,9 +52,9 @@ stages:
       src/params.py:
         Model:
           random_state: 777
-          n_estimators: 100
-          max_depth: 6
+          n_estimators: 200
+          max_depth: 8
           max_features: 5
         TfIdf:
-          max_features: 5000
+          max_features: 50
           stop_words: english

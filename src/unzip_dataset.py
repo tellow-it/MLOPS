@@ -21,7 +21,6 @@ def unzip_dataset_file() -> None:
                 Dataset.save_unzip_dataset_dir,
                 filename
             )
-            logger.info(f"Saving data to {file_path}")
             os.makedirs(os.path.dirname(file_path), exist_ok=True)
             pathlib.Path(file_path).write_bytes(data)
 

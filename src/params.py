@@ -14,13 +14,13 @@ class PreparedDataset:
 
 @dataclass(frozen=True)
 class TfIdf:
-    max_features: int = 5000
+    max_features: int = 50
     stop_words: str = "english"
 
 
 @dataclass(frozen=True)
 class Model:
     random_state: int = 777
-    n_estimators: int = 100
-    max_depth: int = 6
+    n_estimators: int = 200
+    max_depth: int = 8
     max_features: int = 5

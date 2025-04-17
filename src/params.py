@@ -22,5 +22,5 @@ class TfIdf:
 class Model:
     random_state: int = 777
     n_estimators: int = 200
-    max_depth: int = 8
-    max_features: int = 5
+    max_depth: int = 6
+    max_features: int = 10

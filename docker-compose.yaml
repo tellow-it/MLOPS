@@ -1,75 +1,115 @@
 services:
-#  db:
-#    image: pgautoupgrade/pgautoupgrade:13-alpine
-#    container_name: label_studio_db
-#    hostname: db
-#    environment:
-#      - POSTGRES_HOST_AUTH_METHOD=trust
-#    volumes:
-#      - ./data/postgres-data:/var/lib/postgresql/data
-#    healthcheck:
-#      test: [ "CMD", "pg_isready", "-p", "5432", "-U", "postgres", "-d", "postgres" ]
-#      interval: 5s
-#      timeout: 5s
-#      retries: 3
-#
-#  label_studio:
-#    image: heartexlabs/label-studio:latest
-#    container_name: label_studio
-#    restart: always
-#    ports:
-#      - "${LABEL_STUDIO_PORT}:8080"
-#    volumes:
-#      - ./data/label-studio-data:/label-studio/data
-#    command:
-#      - label-studio
-#    depends_on:
-#      db:
-#        condition: service_healthy
-#    environment:
-#      - DJANGO_DB=default
-#      - POSTGRE_NAME=postgres
-#      - POSTGRE_USER=postgres
-#      - POSTGRE_PASSWORD=
-#      - POSTGRE_PORT=5432
-#      - POSTGRE_HOST=db
-#
-#  minio:
-#    image: minio/minio:latest
-#    container_name: label_studio_s3
-#    restart: always
-#    command: server --console-address ":9001" /data/
-#    ports:
-#      - "${MINIO_WEB_PORT}:9000" # web
-#      - "${MINIO_API_PORT}:9001" # api
-#    env_file:
-#      - .env
-#    environment:
-#      MINIO_ROOT_USER: ${MINIO_ROOT_USER}
-#      MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD}
-#    volumes:
-#      - ./s3_data:/data
-#    healthcheck:
-#      test: [ "CMD", "curl", "-f", "http://localhost:9000/minio/health/live" ]
-#      interval: 30s
-#      timeout: 20s
-#      retries: 3
-
-  redis:
-    image: redis:7-alpine
-    container_name: api_cache
+  #  label_studio_db:
+  #    image: pgautoupgrade/pgautoupgrade:13-alpine
+  #    container_name: label_studio_db
+  #    hostname: db
+  #    environment:
+  #      - POSTGRES_HOST_AUTH_METHOD=trust
+  #    volumes:
+  #      - ./data/postgres-data:/var/lib/postgresql/data
+  #    healthcheck:
+  #      test: [ "CMD", "pg_isready", "-p", "5432", "-U", "postgres", "-d", "postgres" ]
+  #      interval: 5s
+  #      timeout: 5s
+  #      retries: 3
+  #
+  #  label_studio:
+  #    image: heartexlabs/label-studio:latest
+  #    container_name: label_studio
+  #    restart: always
+  #    ports:
+  #      - "${LABEL_STUDIO_PORT}:8080"
+  #    volumes:
+  #      - ./data/label-studio-data:/label-studio/data
+  #    command:
+  #      - label-studio
+  #    depends_on:
+  #      label_studio_db:
+  #        condition: service_healthy
+  #    environment:
+  #      - DJANGO_DB=default
+  #      - POSTGRE_NAME=postgres
+  #      - POSTGRE_USER=postgres
+  #      - POSTGRE_PASSWORD=
+  #      - POSTGRE_PORT=5432
+  #      - POSTGRE_HOST=label_studio_db
+  #
+  #  minio:
+  #    image: minio/minio:latest
+  #    container_name: label_studio_s3
+  #    restart: always
+  #    command: server --console-address ":9001" /data/
+  #    ports:
+  #      - "${MINIO_WEB_PORT}:9000" # web
+  #      - "${MINIO_API_PORT}:9001" # api
+  #    env_file:
+  #      - .env
+  #    environment:
+  #      MINIO_ROOT_USER: ${MINIO_ROOT_USER}
+  #      MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD}
+  #    volumes:
+  #      - ./s3_data:/data
+  #    healthcheck:
+  #      test: [ "CMD", "curl", "-f", "http://localhost:9000/minio/health/live" ]
+  #      interval: 30s
+  #      timeout: 20s
+  #      retries: 3
+  #
+  #  redis:
+  #    image: redis:7-alpine
+  #    container_name: api_cache
+  #    restart: always
+  #    ports:
+  #      - "${REDIS_PORT}:6379"
+  #
+  #  api:
+  #    build:
+  #      dockerfile: Dockerfile
+  #      context: .
+  #    container_name: search_api
+  #    restart: always
+  #    ports:
+  #      - "${API_PORT}:8000"
+  #    command: uvicorn run_api:app --host 0.0.0.0 --port 8000
+  #    depends_on:
+  #      - redis
+  mlflow_db:
     restart: always
-    ports:
-      - "${REDIS_PORT}:6379"
+    image: pgautoupgrade/pgautoupgrade:13-alpine
+    container_name: mlflow_db
+    environment:
+      POSTGRES_USER: ${MLFLOW_PG_USER}
+      POSTGRES_PASSWORD: ${MLFLOW_PG_PASSWORD}
+      POSTGRES_DB: ${MLFLOW_PG_DATABASE}
+    volumes:
+      - ./data/mlflow-db-data:/var/lib/postgresql/data/
+    healthcheck:
+      test: [ "CMD", "pg_isready", "-p", "5432", "-U", "${MLFLOW_PG_USER}", "-d", "${MLFLOW_PG_DATABASE}" ]
+      interval: 5s
+      timeout: 5s
+      retries: 3
 
-  api:
+  tracking_server:
     build:
       dockerfile: Dockerfile
-      context: .
-    container_name: search_api
-    restart: always
-    ports:
-      - "${API_PORT}:8000"
-    command: uvicorn run_api:app --host 0.0.0.0 --port 8000
+    container_name: mlflow_server
     depends_on:
-      - redis
+      mlflow_db:
+        condition: service_healthy
+    ports:
+      - "${MLFLOW_PORT}:5000"
+    environment:
+      AWS_ACCESS_KEY_ID: ${REMOTE_AWS_ACCESS_KEY_ID}
+      AWS_SECRET_ACCESS_KEY: ${REMOTE_AWS_SECRET_ACCESS_KEY}
+      MLFLOW_S3_ENDPOINT_URL: ${S3_ENDPOINT_URL}
+    command: >
+      mlflow server
+      --backend-store-uri postgresql://${MLFLOW_PG_USER}:${MLFLOW_PG_PASSWORD}@mlflow_db:5432/${MLFLOW_PG_DATABASE}
+      --host 0.0.0.0
+      --serve-artifacts
+      --artifacts-destination s3://${MLFLOW_BUCKET_NAME}
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost:5000/" ]
+      interval: 30s
+      timeout: 10s
+      retries: 3

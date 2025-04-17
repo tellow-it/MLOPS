@@ -9,7 +9,9 @@ disable=
     R0801,
     E0401,
     W1203,
-    E1120
+    E1120,
+    R1732,
+    W1514
 
 ignore=.venv, venv
 

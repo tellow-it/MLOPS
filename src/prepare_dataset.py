@@ -22,7 +22,10 @@ def json_collection_2_structured_data(path_to_dir: str):
             )
             with open(path_to_file, encoding="utf-8") as file:
                 d = json.load(file)
-                task_data = {"url": d["task"]["data"]["url"]}
+                task_data = {
+                    "url": d["task"]["data"]["url"],
+                    "filename": labeled_task_file
+                }
                 for field in d["result"]:
                     if field["from_name"] == "taxonomy":
                         taxonomy_key_name = list(field["value"].keys())[0]

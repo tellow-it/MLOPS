@@ -27,23 +27,23 @@ stages:
       nfiles: 641
     - path: src/prepare_dataset.py
       hash: md5
-      md5: be24b8874d810bb6e15f5ae8a620e708
-      size: 2456
+      md5: 862d166669223e08ede0ec05c7165354
+      size: 2545
     params:
       src/params.py:
         PreparedDataset.save_path: data/prepared/labeled_dataset.csv
     outs:
     - path: data/prepared/labeled_dataset.csv
       hash: md5
-      md5: 4fcfcab13db0b447067cb4d0acd8e80e
-      size: 1088573
+      md5: 8ec5f54df65d57eee0cdb181b052ac20
+      size: 1093012
   train-and-evaluate:
     cmd: python -m src.train_and_evaluate
     deps:
     - path: data/prepared/labeled_dataset.csv
       hash: md5
-      md5: 4fcfcab13db0b447067cb4d0acd8e80e
-      size: 1088573
+      md5: 8ec5f54df65d57eee0cdb181b052ac20
+      size: 1093012
     - path: src/train_and_evaluate.py
       hash: md5
       md5: f83fe428d1e7a5d1928f3174cc9d96c0
@@ -53,8 +53,8 @@ stages:
         Model:
           random_state: 777
           n_estimators: 200
-          max_depth: 6
-          max_features: 10
+          max_depth: 8
+          max_features: 5
         TfIdf:
-          max_features: 50
+          max_features: 100
           stop_words: english

@@ -5,7 +5,6 @@ import mlflow
 import pandas as pd
 from dotenv import load_dotenv
 
-from core.config import Settings
 from core.logger import logger
 from ml_product_categorizer.scripts.preprocessing import clear_product_text, pipeline_extract_data_4_url
 from src.prepare_dataset import json_collection_2_structured_data
@@ -13,7 +12,7 @@ from src.prepare_dataset import json_collection_2_structured_data
 if __name__ == "__main__":
     load_dotenv()
 
-    parser = argparse.ArgumentParser(prog="inferenec")
+    parser = argparse.ArgumentParser(prog="inference")
     parser.add_argument('--input-path', '-i', required=True)
     parser.add_argument('--output-path', '-o', required=True)
 
@@ -48,7 +47,9 @@ if __name__ == "__main__":
     mlflow.set_tracking_uri(os.getenv("MLFLOW_TRACKING_URI"))
     model_uri = os.getenv("MLFLOW_INFERENCE_MODEL_NAME")
     logger.info(f"Start loading model from mlflow: {model_uri}")
-    model = mlflow.sklearn.load_model(model_uri)
-
-    print(model)
-
+    model = mlflow.pyfunc.load_model(model_uri)
+    logger.info("Start prediction")
+    predictions = model.predict(df)
+    result_df = pd.DataFrame({"category_id": predictions})
+    result_df.to_csv(output_path, index=False)
+    logger.info(f"Success save result prediction to {output_path}")

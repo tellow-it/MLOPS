@@ -14,7 +14,7 @@ class PreparedDataset:
 
 @dataclass(frozen=True)
 class TfIdf:
-    max_features: int = 50
+    max_features: int = 100
     stop_words: str = "english"
 
 
@@ -22,5 +22,5 @@ class TfIdf:
 class Model:
     random_state: int = 777
     n_estimators: int = 200
-    max_depth: int = 6
-    max_features: int = 10
+    max_depth: int = 8
+    max_features: int = 5

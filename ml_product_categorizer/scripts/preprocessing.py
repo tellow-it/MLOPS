@@ -53,3 +53,16 @@ def slugify_categories(categories: list[str]) -> list[list[str]]:
         clear_slug_categories.append(slug_category_words)
 
     return clear_slug_categories
+
+
+def pipeline_extract_data_4_url(url: str):
+    keywords = extract_keywords(url)
+    keywords = keywords_cleaner(keywords)
+    keywords = [word for word in keywords if len(word) > 3]
+    return " ".join(keywords)
+
+
+def clear_product_text(text: str):
+    words = text.split(" ")
+    words = [word for word in words if not word.isnumeric() and len(word) > 3]
+    return " ".join(words)

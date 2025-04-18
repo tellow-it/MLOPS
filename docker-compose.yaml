@@ -62,7 +62,7 @@ services:
   #    ports:
   #      - "${REDIS_PORT}:6379"
   #
-  #  api:
+  #  search_api:
   #    build:
   #      dockerfile: Dockerfile
   #      context: .
@@ -73,6 +73,7 @@ services:
   #    command: uvicorn run_api:app --host 0.0.0.0 --port 8000
   #    depends_on:
   #      - redis
+
   mlflow_db:
     restart: always
     image: pgautoupgrade/pgautoupgrade:13-alpine
@@ -113,3 +114,23 @@ services:
       interval: 30s
       timeout: 10s
       retries: 3
+
+  model_service_api:
+    build:
+      dockerfile: Dockerfile
+      context: .
+    container_name: model_service_api
+    restart: always
+    ports:
+      - "${MODEL_SERVICE_API_PORT}:8000"
+    command: uvicorn run_model_service_api:app --host 0.0.0.0 --port 8000
+
+  business_service_api:
+    build:
+      dockerfile: Dockerfile
+      context: .
+    container_name: business_service_api
+    restart: always
+    ports:
+      - "${BUSINESS_SERVICE_API_PORT}:8000"
+    command: uvicorn run_business_service_api:app --host 0.0.0.0 --port 8000

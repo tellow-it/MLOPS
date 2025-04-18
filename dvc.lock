@@ -46,8 +46,8 @@ stages:
       size: 1088573
     - path: src/train_and_evaluate.py
       hash: md5
-      md5: 268e62a894d056c569efa6d97cc1ed98
-      size: 2956
+      md5: f83fe428d1e7a5d1928f3174cc9d96c0
+      size: 3401
     params:
       src/params.py:
         Model:

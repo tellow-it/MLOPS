@@ -12,7 +12,19 @@ from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import LabelEncoder
 
 from core.config import Settings
+from core.logger import logger
 from src import params
+
+
+class TextClassifierWrapper(mlflow.pyfunc.PythonModel):
+    def __init__(self, vectorizer, model):
+        self.vectorizer = vectorizer
+        self.model = model
+
+    def predict(self, context, model_input):
+        texts = model_input["total_text"]
+        X_tfidf = self.vectorizer.transform(texts)
+        return self.model.predict(X_tfidf)
 
 
 def get_predictions_and_metrics(y_true, y_pred) -> dict:
@@ -74,19 +86,19 @@ if __name__ == "__main__":
         train_metrics = get_predictions_and_metrics(y_train, rf.predict(X_train_tfidf))
         test_metrics = get_predictions_and_metrics(y_test, rf.predict(X_test_tfidf))
 
-        metrics = {f"train_{k}": v for k, v in train_metrics.items()} | {
-            f"test_{k}": v for k, v in test_metrics.items()
-        }
+        mlflow.log_metrics({
+            **{f"train_{k}": v for k, v in train_metrics.items()},
+            **{f"test_{k}": v for k, v in test_metrics.items()}
+        })
 
-        mlflow.log_metrics(metrics)
+        input_example = pd.DataFrame({"total_text": X_train[:5]})
+        signature = infer_signature(input_example, rf.predict(X_train_tfidf[:5]))
 
-        input_sample = X_train_tfidf[:5]
-        output_sample = rf.predict(X_train_tfidf[:5])
-        signature = infer_signature(input_sample, output_sample)
+        wrapped_model = TextClassifierWrapper(vectorizer=tfidf, model=rf)
 
-        mlflow.sklearn.log_model(
-            sk_model=rf,
+        mlflow.pyfunc.log_model(
             artifact_path="model",
-            input_example=input_sample,
-            signature=signature,
+            python_model=wrapped_model,
+            input_example=input_example,
+            signature=signature
         )

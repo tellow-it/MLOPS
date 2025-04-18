@@ -10,5 +10,5 @@
 ['remote "external_s3"']
     url = s3://iva.tikhonov.gitlab/dvc-storage/
     endpointurl = https://minio.v-efimov.tech
-    access_key_id = "ZG04kZ5SrzamFekcZoam"
-    secret_access_key = "9VSIohhwJx3qJYgJ1mtaocMtZ0XwHHOXXVtafPxl"
+    access_key_id = ""
+    secret_access_key = ""

@@ -6,15 +6,18 @@ import pandas as pd
 from dotenv import load_dotenv
 
 from core.logger import logger
-from ml_product_categorizer.scripts.preprocessing import clear_product_text, pipeline_extract_data_4_url
+from ml_product_categorizer.scripts.preprocessing import (
+    clear_product_text,
+    pipeline_extract_data_4_url,
+)
 from src.prepare_dataset import json_collection_2_structured_data
 
 if __name__ == "__main__":
     load_dotenv()
 
     parser = argparse.ArgumentParser(prog="inference")
-    parser.add_argument('--input-path', '-i', required=True)
-    parser.add_argument('--output-path', '-o', required=True)
+    parser.add_argument("--input-path", "-i", required=True)
+    parser.add_argument("--output-path", "-o", required=True)
 
     args = parser.parse_args()
 

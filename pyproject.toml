@@ -62,7 +62,7 @@ select = [
     "Q", # flake8-quotes
     "ANN", # flake8-annotations
 ]
-ignore = ["B008", "ANN201", "ANN001", "UP007"]
+ignore = ["B008", "ANN201", "ANN001", "UP007", "N806"]
 
 [tool.ruff.lint.flake8-quotes]
 docstring-quotes = "double"

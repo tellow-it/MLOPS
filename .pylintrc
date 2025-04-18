@@ -11,7 +11,8 @@ disable=
     W1203,
     E1120,
     R1732,
-    W1514
+    W1514,
+    C0103
 
 ignore=.venv, venv
 

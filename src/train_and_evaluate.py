@@ -12,19 +12,18 @@ from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import LabelEncoder
 
 from core.config import Settings
-from core.logger import logger
 from src import params
 
 
 class TextClassifierWrapper(mlflow.pyfunc.PythonModel):
-    def __init__(self, vectorizer, model):
+    def __init__(self, vectorizer, model) -> None:
         self.vectorizer = vectorizer
         self.model = model
 
     def predict(self, context, model_input):
         texts = model_input["total_text"]
-        X_tfidf = self.vectorizer.transform(texts)
-        return self.model.predict(X_tfidf)
+        X_tf_idf = self.vectorizer.transform(texts)
+        return self.model.predict(X_tf_idf)
 
 
 def get_predictions_and_metrics(y_true, y_pred) -> dict:

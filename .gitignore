@@ -1,9 +1,14 @@
 data/label-studio-data
 data/postgres-data
-
+data/mlflow-db-data
+*.csv
+*.json
+*.jupyter
+*.parquet
+*/.jupyter/
 # Mac OS-specific storage files
 .DS_Store
-
+*.zip
 # vim
 *.swp
 *.swo

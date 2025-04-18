@@ -1,0 +1,60 @@
+schema: '2.0'
+stages:
+  dataset:
+    cmd: python -m src.unzip_dataset
+    deps:
+    - path: src/unzip_dataset.py
+      hash: md5
+      md5: e6d0c9736ca63a4c5e61a3847e41d595
+      size: 862
+    params:
+      src/params.py:
+        Dataset.save_unzip_dataset_dir: data/unzip/labeled_dataset
+        Dataset.zipped_dataset_path: data/raw/labeled_dataset.zip
+    outs:
+    - path: data/unzip/labeled_dataset
+      hash: md5
+      md5: 55c1c79eb60f242c4119dc3f29b68327.dir
+      size: 1293888
+      nfiles: 641
+  prepare-dataset:
+    cmd: python -m src.prepare_dataset
+    deps:
+    - path: data/unzip/labeled_dataset
+      hash: md5
+      md5: 55c1c79eb60f242c4119dc3f29b68327.dir
+      size: 1293888
+      nfiles: 641
+    - path: src/prepare_dataset.py
+      hash: md5
+      md5: 862d166669223e08ede0ec05c7165354
+      size: 2545
+    params:
+      src/params.py:
+        PreparedDataset.save_path: data/prepared/labeled_dataset.csv
+    outs:
+    - path: data/prepared/labeled_dataset.csv
+      hash: md5
+      md5: 8ec5f54df65d57eee0cdb181b052ac20
+      size: 1093012
+  train-and-evaluate:
+    cmd: python -m src.train_and_evaluate
+    deps:
+    - path: data/prepared/labeled_dataset.csv
+      hash: md5
+      md5: 8ec5f54df65d57eee0cdb181b052ac20
+      size: 1093012
+    - path: src/train_and_evaluate.py
+      hash: md5
+      md5: f83fe428d1e7a5d1928f3174cc9d96c0
+      size: 3401
+    params:
+      src/params.py:
+        Model:
+          random_state: 777
+          n_estimators: 200
+          max_depth: 8
+          max_features: 5
+        TfIdf:
+          max_features: 100
+          stop_words: english

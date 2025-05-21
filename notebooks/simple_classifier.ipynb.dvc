@@ -1,0 +1,5 @@
+outs:
+- md5: 76c7d6f24910f690a40af1d25f3a6560
+  size: 100086
+  hash: md5
+  path: simple_classifier.ipynb

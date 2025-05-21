@@ -1,14 +1,13 @@
 import os
 from contextlib import asynccontextmanager
-
-import pandas as pd
-from dotenv import load_dotenv
-from fastapi import HTTPException, Response
 from typing import Union
 
 import mlflow
-from fastapi import FastAPI
+import pandas as pd
+from dotenv import load_dotenv
+from fastapi import FastAPI, HTTPException, Response
 from pydantic import BaseModel
+from starlette import status
 
 from core.logger import logger
 
@@ -18,7 +17,7 @@ CATEGORIZATION_TEXT_MODEL = None
 
 
 @asynccontextmanager
-async def lifespan(app: FastAPI):
+async def lifespan(app_: FastAPI):
     global CATEGORIZATION_TEXT_MODEL
     mlflow.set_tracking_uri(os.getenv("MLFLOW_TRACKING_URI"))
     model_uri = os.getenv("MLFLOW_INFERENCE_MODEL_NAME")
@@ -41,16 +40,14 @@ class ResultPredictionSchema(BaseModel):
     category_id: int
 
 
-@app.get("/")
-async def read_root():
-    return {"Hello": "World"}
-
-
 @app.get("/health")
 async def check_model_status():
     if CATEGORIZATION_TEXT_MODEL is not None:
         return Response(status_code=200)
-    return Response(status_code=503)
+    raise HTTPException(
+        status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
+        detail="model is not loaded"
+    )
 
 
 @app.post(
@@ -66,7 +63,7 @@ async def predict(input_data: Union[InputSchema, list[InputSchema]]):
             category_id=predictions[0]
         )
         return result
-    elif isinstance(input_data, list):
+    if isinstance(input_data, list):
         texts = [data.text for data in input_data]
         input_df = pd.DataFrame({"total_text": texts})
         predictions = CATEGORIZATION_TEXT_MODEL.predict(input_df)
@@ -79,8 +76,7 @@ async def predict(input_data: Union[InputSchema, list[InputSchema]]):
                 )
             )
         return result
-    else:
-        raise HTTPException(
-            status_code=400,
-            detail="Incorrect input params"
-        )
+    raise HTTPException(
+        status_code=400,
+        detail="Incorrect input params"
+    )

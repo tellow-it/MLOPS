@@ -14,3 +14,5 @@ class Settings:
     MLFLOW_PORT = os.getenv("MLFLOW_PORT")
     MLFLOW_TRACKING_URI = os.getenv("MLFLOW_TRACKING_URI")
     TRACKING_COMMIT_FILE = "tracking_commit.lock"
+
+    SERVICE_MODEL_API = os.getenv("SERVICE_MODEL_API")

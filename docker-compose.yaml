@@ -91,7 +91,9 @@ services:
       retries: 3
 
   tracking_server:
+    image: project_image
     build:
+      context: .
       dockerfile: Dockerfile
     container_name: mlflow_server
     depends_on:
@@ -103,6 +105,8 @@ services:
       AWS_ACCESS_KEY_ID: ${REMOTE_AWS_ACCESS_KEY_ID}
       AWS_SECRET_ACCESS_KEY: ${REMOTE_AWS_SECRET_ACCESS_KEY}
       MLFLOW_S3_ENDPOINT_URL: ${S3_ENDPOINT_URL}
+    volumes:
+      - .:/app
     command: >
       mlflow server
       --backend-store-uri postgresql://${MLFLOW_PG_USER}:${MLFLOW_PG_PASSWORD}@mlflow_db:5432/${MLFLOW_PG_DATABASE}
@@ -116,21 +120,25 @@ services:
       retries: 3
 
   model_service_api:
-    build:
-      dockerfile: Dockerfile
-      context: .
+    image: project_image
     container_name: model_service_api
     restart: always
     ports:
-      - "${MODEL_SERVICE_API_PORT}:8000"
-    command: uvicorn run_model_service_api:app --host 0.0.0.0 --port 8000
+      - "${MODEL_SERVICE_API_PORT}:8001"
+    depends_on:
+      - tracking_server
+    volumes:
+      - .:/app
+    command: uvicorn run_model_service_api:app --host 0.0.0.0 --port 8001
 
   business_service_api:
-    build:
-      dockerfile: Dockerfile
-      context: .
+    image: project_image
     container_name: business_service_api
     restart: always
     ports:
-      - "${BUSINESS_SERVICE_API_PORT}:8000"
-    command: uvicorn run_business_service_api:app --host 0.0.0.0 --port 8000
+      - "${BUSINESS_SERVICE_API_PORT}:8002"
+    depends_on:
+      - tracking_server
+    volumes:
+      - .:/app
+    command: uvicorn run_business_service_api:app --host 0.0.0.0 --port 8002

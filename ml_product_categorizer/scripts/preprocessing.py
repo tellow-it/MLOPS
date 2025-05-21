@@ -66,3 +66,23 @@ def clear_product_text(text: str):
     words = text.split(" ")
     words = [word for word in words if not word.isnumeric() and len(word) > 3]
     return " ".join(words)
+
+
+def process_text(url: str = None, product_text: str = None, picture_url: str = None):
+    url_keywords_cleaned = pipeline_extract_data_4_url(url) if url else None
+    picture_url_keywords_cleaned = None
+    if picture_url:
+        picture_url_keywords_cleaned = pipeline_extract_data_4_url(picture_url)
+    product_text_cleaned = clear_product_text(product_text) if product_text else None
+    total_text = ""
+
+    if url_keywords_cleaned:
+        total_text += url_keywords_cleaned + " "
+
+    if picture_url_keywords_cleaned:
+        total_text += " " + picture_url_keywords_cleaned
+
+    if product_text_cleaned:
+        total_text += " " + product_text_cleaned
+
+    return total_text

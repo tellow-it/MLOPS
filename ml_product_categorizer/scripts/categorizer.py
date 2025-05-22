@@ -14,4 +14,5 @@ def find_closest_category(keywords: list[str], slug_categories: list[str]) -> No
             best_distance = iou
             closest_category = category
 
+
     return closest_category

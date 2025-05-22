@@ -24,3 +24,6 @@ class Model:
     n_estimators: int = 200
     max_depth: int = 8
     max_features: int = 5
+
+
+

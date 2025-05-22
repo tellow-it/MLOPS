@@ -1,6 +1,6 @@
 stages:
-  - build
-  - validation
+  - lint
+  - test
   - deploy
 
 cache:
@@ -13,24 +13,30 @@ build-job:
     - pip install -r requirements.txt
 
 
-lint-pylint-job:
-  stage: validation
+lint-pylint:
+  stage: lint
   script:
-    - echo "Linting code by pylint...."
-    - pip install pylint python-slugify
+    - echo "Running pylint..."
+    - pip install pylint
     - pylint . || exit 1
-    - echo "Pylint linter passed."
+    - echo "pylint passed."
 
-lint-ruff-job:
-  stage: validation
+lint-ruff:
+  stage: lint
   script:
-    - echo "Linting code by ruff..."
+    - echo "Running ruff..."
     - pip install ruff
-    - ruff check
-    - echo "Ruff linter passed."
+    - ruff check .
+    - echo "ruff passed."
 
-deploy-job:
-  stage: deploy
+unit-tests:
+  stage: test
   script:
-    - echo "Deploying application..."
-    - echo "Application successfully deployed."
+    - echo "Running unit tests..."
+    - pip install pytest
+    - PYTHONPATH=$(pwd) pytest tests/tests.py
+  only:
+    refs:
+      - merge_requests
+    variables:
+      - $CI_MERGE_REQUEST_TARGET_BRANCH_NAME == "master"

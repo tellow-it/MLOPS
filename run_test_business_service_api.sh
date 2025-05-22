@@ -1,2 +1,2 @@
 #!/bin/bash
-python -m tests.test_business_service_api
+python -m api_tests.test_business_service_api

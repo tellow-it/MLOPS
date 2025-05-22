@@ -1,2 +1,2 @@
 #!/bin/bash
-python -m tests.test_triton
+python -m api_tests.test_triton

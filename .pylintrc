@@ -15,7 +15,7 @@ disable=
     C0103,
     W0603
 
-ignore=.venv, venv, triton, tests
+ignore=.venv, venv, triton, api_tests
 
 [FORMAT]
 max-line-length=88

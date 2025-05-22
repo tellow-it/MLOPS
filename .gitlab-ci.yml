@@ -13,7 +13,6 @@ build-job:
   script:
     - pip install -r requirements.txt
 
-
 lint-pylint:
   stage: lint
   script:
@@ -21,6 +20,9 @@ lint-pylint:
     - pip install pylint
     - pylint . || exit 1
     - echo "pylint passed."
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "push"'
+    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
 
 lint-ruff:
   stage: lint
@@ -29,6 +31,9 @@ lint-ruff:
     - pip install ruff
     - ruff check .
     - echo "ruff passed."
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "push"'
+    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
 
 unit-tests:
   stage: test

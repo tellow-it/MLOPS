@@ -1,0 +1,16 @@
+name: "text_preprocessor"
+backend: "python"
+max_batch_size: 4
+
+input [
+  {
+    name: "raw_text"
+    data_type: TYPE_STRING
+    dims: [ -1 ]
+  }
+]
+
+output [
+  { name: "input_ids"      data_type: TYPE_INT64 dims: [ 512 ] },
+  { name: "attention_mask" data_type: TYPE_INT64 dims: [ 512 ] }
+] 

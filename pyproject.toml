@@ -28,7 +28,8 @@ exclude = [
     ".ipynb",
     ".ipynb_checkpoints",
     "__pycache__",
-    "*.ipynb"
+    "*.ipynb",
+    "triton"
 ]
 line-length = 88
 indent-width = 4

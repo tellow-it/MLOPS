@@ -36,8 +36,7 @@ unit-tests:
     - echo "Running unit tests..."
     - pip install pytest python-slugify
     - PYTHONPATH=$(pwd) pytest tests/tests.py
-  only:
-    refs:
-      - merge_requests
-    variables:
-      - $CI_MERGE_REQUEST_TARGET_BRANCH_NAME == "master"
+  rules:
+    - if: $CI_PIPELINE_SOURCE == 'merge_request_event'
+    - if: $CI_MERGE_REQUEST_TARGET_BRANCH_NAME == 'master'
+

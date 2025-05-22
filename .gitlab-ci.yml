@@ -54,8 +54,7 @@ deploy-image:
     BUILDAH_FORMAT: docker
     FQ_IMAGE_NAME: "$CI_REGISTRY_IMAGE"
   rules:
-    - if: '$CI_PIPELINE_SOURCE == "push"'
-    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
+    - if: '$CI_COMMIT_BRANCH == "master"'
   before_script:
     - buildah login -u "$CI_REGISTRY_USER" -p "$CI_JOB_TOKEN" $CI_REGISTRY
   script:

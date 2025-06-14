@@ -1,6 +1,7 @@
 data/label-studio-data
 data/postgres-data
 data/mlflow-db-data
+*.tsv
 *.csv
 *.json
 *.jupyter

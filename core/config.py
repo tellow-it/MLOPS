@@ -11,6 +11,11 @@ class Settings:
     API_VERSION = os.getenv("API_VERSION")
     PROJECT_VERSION = os.getenv("PROJECT_VERSION")
 
+    AWS_ACCESS_KEY_ID = os.getenv("AWS_ACCESS_KEY_ID")
+    AWS_SECRET_ACCESS_KEY = os.getenv("AWS_SECRET_ACCESS_KEY")
+    S3_ENDPOINT_URL = os.getenv("S3_ENDPOINT_URL")
+    BUCKET_NAME = os.getenv("BUCKET_NAME")
+
     MLFLOW_PORT = os.getenv("MLFLOW_PORT")
     MLFLOW_TRACKING_URI = os.getenv("MLFLOW_TRACKING_URI")
     TRACKING_COMMIT_FILE = "tracking_commit.lock"

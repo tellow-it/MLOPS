@@ -5,6 +5,7 @@ data/mlflow-db-data
 *.csv
 *.json
 *.jupyter
+*.ipynb
 *.parquet
 */.jupyter/
 # Mac OS-specific storage files

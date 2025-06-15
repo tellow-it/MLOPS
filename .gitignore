@@ -11,6 +11,7 @@ data/mlflow-db-data
 .DS_Store
 *.zip
 # vim
+*.cbm
 *.swp
 *.swo
 *.onnx

@@ -39,13 +39,6 @@ services:
       timeout: 10s
       retries: 3
 
-
-  redis:
-    image: redis:7-alpine
-    restart: always
-    ports:
-      - "${REDIS_PORT}:6379"
-
   model_service_api:
     image: project_image
     build:
@@ -55,7 +48,6 @@ services:
     ports:
       - "${MODEL_SERVICE_API_PORT}:8001"
     depends_on:
-      - redis
       - mlflow
     volumes:
       - .:/app
@@ -67,11 +59,28 @@ services:
     ports:
       - "${BUSINESS_SERVICE_API_PORT}:8002"
     depends_on:
-      - redis
       - model_service_api
     volumes:
       - .:/app
     command: uvicorn business_service_api:app --host 0.0.0.0 --port 8002
+
+  prometheus:
+    image: prom/prometheus
+    volumes:
+      - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+      # - ./prometheus/alert_rules.yml:/etc/prometheus/alert_rules.yml
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+    ports:
+      - "${PROMETHEUS_PORT}:9090"
+
+  grafana:
+    image: grafana/grafana
+    ports:
+      - "${GRAFANA_PORT}:3000"
+    depends_on:
+      - prometheus
+
 
 volumes:
   mlflow_db_data:

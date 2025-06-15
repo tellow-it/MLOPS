@@ -1,20 +1,15 @@
 from contextlib import asynccontextmanager
-from typing import Union, Optional
-
 import mlflow
-
-from fastapi import FastAPI, HTTPException, Response
-from pydantic import BaseModel
-from starlette import status
+from fastapi import FastAPI
+from prometheus_fastapi_instrumentator import Instrumentator
 
 from core.logger import logger
 from core.config import Settings
 from src.ml.model_registry import registry
 from src.ml.loader import load_models, load_base_categories
-from src.ml.predict import model_predict
 from src.ml.upload_model import upload_model_to_mlflow
-from src.scripts.pipeline_maas import get_emb_by_data
 from src.scripts.s3.downloader import download_data_from_s3
+from src.apis.model_service.routers.router_service import router_service
 
 
 @asynccontextmanager
@@ -47,52 +42,18 @@ async def lifespan(app_: FastAPI):
     yield
 
 
-app = FastAPI(lifespan=lifespan)
-
-
-class TextImageSchema(BaseModel):
-    text: str
-    image_base64: Optional[str] = None
-
-
-class PredictionSchema(BaseModel):
-    category: Optional[str] = None
-
-
-@app.get("/health")
-async def check_model_status():
-    if registry.status_load_models():
-        return Response(status_code=200)
-    raise HTTPException(
-        status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
-        detail="models is not loaded"
-    )
-
-
-@app.post(
-    "/predict",
-    response_model=Union[PredictionSchema, list[PredictionSchema]]
+app = FastAPI(
+    title="Model Service API",
+    description="Model Service API for categorization by text and image",
+    version="1.0.0",
+    lifespan=lifespan
 )
-async def predict(input_params: Union[TextImageSchema, list[TextImageSchema]]):
-    if not registry.status_load_models():
-        raise HTTPException(
-            status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
-            detail="models is not loaded"
-        )
-    if isinstance(input_params, TextImageSchema):
-        x = get_emb_by_data(text=input_params.text, image_base64=input_params.image_base64)
-        predicted_category = model_predict(x=x)
-        return PredictionSchema(category=predicted_category)
-    if isinstance(input_params, list):
-        prediction_result = []
-        for input_data in input_params:
-            x = get_emb_by_data(text=input_data.text, image_base64=input_data.image_base64)
-            predicted_category = model_predict(x=x)
-            prediction_result.append(
-                PredictionSchema(category=predicted_category)
-            )
-        return prediction_result
-    raise HTTPException(
-        status_code=400,
-        detail="Incorrect input params"
-    )
+
+app.include_router(router_service)
+
+instrumentator = Instrumentator(
+    should_group_status_codes=True,
+    should_ignore_untemplated=True,
+    should_respect_env_var=False,
+)
+instrumentator.instrument(app).expose(app, include_in_schema=False, endpoint="/metrics")

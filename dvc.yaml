@@ -1,33 +1,33 @@
-vars:
-  - src/params.py
-
-stages:
-  dataset:
-    cmd: python -m src.unzip_dataset
-    deps:
-      - src/unzip_dataset.py
-    params:
-      - src/params.py:
-        - Dataset.zipped_dataset_path
-        - Dataset.save_unzip_dataset_dir
-    outs:
-      - ${Dataset.save_unzip_dataset_dir}
-  prepare-dataset:
-    cmd: python -m src.prepare_dataset
-    deps:
-      - ${Dataset.save_unzip_dataset_dir}
-      - src/prepare_dataset.py
-    params:
-      - src/params.py:
-          - PreparedDataset.save_path
-    outs:
-      - ${PreparedDataset.save_path}
-  train-and-evaluate:
-    cmd: python -m src.train_and_evaluate
-    deps:
-      - ${PreparedDataset.save_path}
-      - src/train_and_evaluate.py
-    params:
-      - src/params.py:
-          - Model
-          - TfIdf
+#vars:
+#  - src/params.py
+#
+#stages:
+#  dataset:
+#    cmd: python -m src.unzip_dataset
+#    deps:
+#      - src/unzip_dataset.py
+#    params:
+#      - src/params.py:
+#        - Dataset.zipped_dataset_path
+#        - Dataset.save_unzip_dataset_dir
+#    outs:
+#      - ${Dataset.save_unzip_dataset_dir}
+#  prepare-dataset:
+#    cmd: python -m src.prepare_dataset
+#    deps:
+#      - ${Dataset.save_unzip_dataset_dir}
+#      - src/prepare_dataset.py
+#    params:
+#      - src/params.py:
+#          - PreparedDataset.save_path
+#    outs:
+#      - ${PreparedDataset.save_path}
+#  train-and-evaluate:
+#    cmd: python -m src.train_and_evaluate
+#    deps:
+#      - ${PreparedDataset.save_path}
+#      - src/train_and_evaluate.py
+#    params:
+#      - src/params.py:
+#          - Model
+#          - TfIdf

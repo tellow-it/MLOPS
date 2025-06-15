@@ -1,12 +1,13 @@
 from fastapi import FastAPI
 from prometheus_fastapi_instrumentator import Instrumentator
 
+from core.config import Settings
 from src.apis.business_service.routers.router_business import router_business
 
 app = FastAPI(
-    title="Business Service API",
-    description="Business Service API for categorization by product by url or text + image_url",
-    version="1.0.0"
+    title=Settings.BUSINESS_SERVICE_API_TITLE,
+    description=Settings.BUSINESS_SERVICE_API_DESCRIPTION,
+    version=Settings.BUSINESS_SERVICE_API_VERSION
 )
 
 app.include_router(router_business)

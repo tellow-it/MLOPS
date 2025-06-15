@@ -1,4 +1,5 @@
 import numpy as np
+
 from src.ml.model_registry import registry
 
 
@@ -46,7 +47,8 @@ def model_predict(x: np.array):
     y_cat_l3_part_l3 = y_cat_l3.split(" -> ")[2]
 
     # проверка есть ли такой l3
-    if y_cat_l3_part_l3 not in registry.base_categories[y_cat_l3_part_l1][y_cat_l3_part_l2]:
+    if (y_cat_l3_part_l3 not in
+            registry.base_categories[y_cat_l3_part_l1][y_cat_l3_part_l2]):
         return f"{y_cat_l3_part_l1} -> {y_cat_l3_part_l2}"
 
     return y_cat_l3

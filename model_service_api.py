@@ -1,15 +1,16 @@
 from contextlib import asynccontextmanager
-import mlflow
+
 from fastapi import FastAPI
 from prometheus_fastapi_instrumentator import Instrumentator
 
-from core.logger import logger
+import mlflow
 from core.config import Settings
+from core.logger import logger
+from src.apis.model_service.routers.router_service import router_service
+from src.ml.loader import load_base_categories, load_models
 from src.ml.model_registry import registry
-from src.ml.loader import load_models, load_base_categories
 from src.ml.upload_model import upload_model_to_mlflow
 from src.scripts.s3.downloader import download_data_from_s3
-from src.apis.model_service.routers.router_service import router_service
 
 
 @asynccontextmanager
@@ -43,9 +44,9 @@ async def lifespan(app_: FastAPI):
 
 
 app = FastAPI(
-    title="Model Service API",
-    description="Model Service API for categorization by text and image",
-    version="1.0.0",
+    title=Settings.MODEL_SERVICE_API_TITLE,
+    description=Settings.MODEL_SERVICE_API_DESCRIPTION,
+    version=Settings.MODEL_SERVICE_API_VERSION,
     lifespan=lifespan
 )
 

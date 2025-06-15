@@ -1,8 +1,12 @@
 from fastapi import APIRouter, HTTPException
-from prometheus_client import Histogram, Counter
+from prometheus_client import Counter, Histogram
 from starlette import status
 
-from src.apis.business_service.schemas.business_service import PredictionSchema, UrlSchema, TextImageUrlSchema
+from src.apis.business_service.schemas.business_service import (
+    PredictionSchema,
+    TextImageUrlSchema,
+    UrlSchema,
+)
 from src.scripts.parse.donwload_image import load_image_from_base64
 from src.scripts.parse.parse_url import extract_product_info
 from src.scripts.service_model import predict_service_model
@@ -45,7 +49,8 @@ async def predict_by_url(input_data: UrlSchema):
         if not product_info["title"] and not product_info["description"]:
             raise HTTPException(
                 status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-                detail="Cant categorize. It was not possible to find Title or Description"
+                detail="Cant categorize. "
+                       "It was not possible to find Title or Description"
             )
         text = product_info["title"] + ". " + product_info["description"]
 

@@ -1,6 +1,6 @@
-from numpy import ndarray
-from transformers import AutoTokenizer, AutoModel
 import torch
+from numpy import ndarray
+from transformers import AutoModel, AutoTokenizer
 
 tokenizer_e5_text = AutoTokenizer.from_pretrained("intfloat/multilingual-e5-base")
 model_e5_text = AutoModel.from_pretrained("intfloat/multilingual-e5-base")

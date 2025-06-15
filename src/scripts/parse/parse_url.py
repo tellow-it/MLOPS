@@ -1,6 +1,7 @@
+from urllib.parse import urljoin
+
 import requests
 from bs4 import BeautifulSoup
-from urllib.parse import urljoin
 
 HEADERS = {
     "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64)"
@@ -22,7 +23,8 @@ def extract_product_info(url):
             soup.find("meta", attrs={"name": "title"}) or
             soup.title
     )
-    title = title.get("content") if title and title.has_attr("content") else getattr(title, "text", "").strip()
+    title = title.get("content") if title and title.has_attr("content")\
+        else getattr(title, "text", "").strip()
 
     # Description extraction
     description = (

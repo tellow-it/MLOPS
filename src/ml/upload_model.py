@@ -1,10 +1,9 @@
-import mlflow
-from mlflow.tracking import MlflowClient
-
 from catboost import CatBoostClassifier
 
+import mlflow
 from core.config import Settings
 from core.logger import logger
+from mlflow.tracking import MlflowClient
 
 MODEL_PATHS = {
     "CLASSIFIER_MODEL_CAT_L1": "/app/models/catboot_product_cat_l1.cbm",
@@ -18,7 +17,7 @@ def create_model():
         iterations=1000,
         learning_rate=0.1,
         depth=6,
-        eval_metric='Accuracy',
+        eval_metric="Accuracy",
         random_seed=42,
         task_type="GPU",
         gpu_ram_part=0.6

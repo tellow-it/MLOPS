@@ -1,9 +1,13 @@
 from typing import Union
-from fastapi import HTTPException, Response, APIRouter
-from starlette import status
-from prometheus_client import Histogram, Counter
 
-from src.apis.model_service.schemas.model_service import PredictionSchema, TextImageSchema
+from fastapi import APIRouter, HTTPException, Response
+from prometheus_client import Counter, Histogram
+from starlette import status
+
+from src.apis.model_service.schemas.model_service import (
+    PredictionSchema,
+    TextImageSchema,
+)
 from src.ml.model_registry import registry
 from src.ml.predict import model_predict
 from src.scripts.pipeline_maas import get_emb_by_data
@@ -61,7 +65,10 @@ async def predict(input_params: Union[TextImageSchema, list[TextImageSchema]]):
     if isinstance(input_params, TextImageSchema):
         SINGLE_REQUEST_COUNTER.inc()
         with SINGLE_PREDICTION_LATENCY.time():
-            x = get_emb_by_data(text=input_params.text, image_base64=input_params.image_base64)
+            x = get_emb_by_data(
+                text=input_params.text,
+                image_base64=input_params.image_base64
+            )
             predicted_category = model_predict(x=x)
             return PredictionSchema(category=predicted_category)
     if isinstance(input_params, list):
@@ -70,7 +77,10 @@ async def predict(input_params: Union[TextImageSchema, list[TextImageSchema]]):
         with BATCH_PREDICTION_LATENCY.time():
             prediction_result = []
             for input_data in input_params:
-                x = get_emb_by_data(text=input_data.text, image_base64=input_data.image_base64)
+                x = get_emb_by_data(
+                    text=input_data.text,
+                    image_base64=input_data.image_base64
+                )
                 predicted_category = model_predict(x=x)
                 prediction_result.append(
                     PredictionSchema(category=predicted_category)

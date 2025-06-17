@@ -35,7 +35,7 @@ REQUEST_COUNTER = Counter(
 )
 
 
-@router_business.post("/predict-by-url", response_model=PredictionSchema)
+@router_business.post("/predict_by_url", response_model=PredictionSchema)
 async def predict_by_url(input_data: UrlSchema):
     REQUEST_COUNTER.inc()
     PREDICTION_BY_URL_REQUEST_COUNTER.inc()
@@ -65,7 +65,7 @@ async def predict_by_url(input_data: UrlSchema):
         return PredictionSchema(category=result_service_model["category"])
 
 
-@router_business.post("/predict-by-text-image", response_model=PredictionSchema)
+@router_business.post("/predict_by_text_image", response_model=PredictionSchema)
 async def predict_by_text_image(input_data: TextImageUrlSchema):
     REQUEST_COUNTER.inc()
     PREDICTION_BY_TEXT_IMAGE_URL_REQUEST_COUNTER.inc()

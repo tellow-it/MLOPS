@@ -4,6 +4,7 @@ data/mlflow-db-data
 *.tsv
 *.csv
 *.json
+*.bot_token
 *.jupyter
 *.ipynb
 *.parquet

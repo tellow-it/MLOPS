@@ -1,33 +1,81 @@
 # Product Categorization Service 
-## Task
-Service that determines product category by its url
-## Project structure
+## Задача
+Категоризовать продукт по его url
+## Структура проекта
 ```
-/data - datasets
-/models
-/notebooks
-/reports
-    /figures - графики
-/src
-/tests
-.gitignore
-requirements.txt
-pyproject.toml
-README.md
-config.yaml
+├── alertmanager
+│   ├── alertmanager.yml
+│   └── templates
+│       └── telegram.tmpl
+├── business_service_api.py
+├── core
+│   ├── config.py
+│   └── logger.py
+├── data
+│   ├── label-studio-data
+│   ├── prepared
+│   ├── raw
+│   └──ru_ecomm_tree_category.json
+├── docker-compose.yaml
+├── Dockerfile
+├── dvc.lock
+├── dvc.yaml
+├── LICENSE
+├── mlflow
+│   ├── Dockerfile
+│   └── requirements.txt
+├── models
+├── model_service_api.py
+├── notebooks
+├── prometheus
+│   ├── alert_rules.yml
+│   └── prometheus.yml
+├── pyproject.toml
+├── README.md
+├── reports
+├── requirements.txt
+├── src
+│   ├── apis
+│   │   ├── business_service
+│   │   │   ├── routers
+│   │   │   │   └── router_business.py
+│   │   │   └── schemas
+│   │   │       └── business_service.py
+│   │   └── model_service
+│   │       ├── routers
+│   │       │   └── router_service.py
+│   │       └── schemas
+│   │           └── model_service.py
+│   ├── ml
+│   │   ├── emeddings
+│   │   │   ├── emb_image.py
+│   │   │   └── emb_text.py
+│   │   ├── loader.py
+│   │   ├── model_registry.py
+│   │   ├── predict.py
+│   │   └── upload_model.py
+│   └── scripts
+│       ├── parse
+│       │   ├── donwload_image.py
+│       │   └──parse_url.py
+│       ├── pipeline_maas.py
+│       ├── s3
+│       │   └── downloader.py
+│       └── service_model.py
+├── tests
+│   └── tests.py
+└── tracking_commit.lock
 ```
-## Task 1
-### Дальнейшие шаги + выводы по EDA
-На данный момент получилось только по url категоризировать 651 товар путем извлечения информации из ссылок, конвертирование исходных категорий в slug формат и сравнение их как множества через iou.
-
-#### Гипотеза 1. Продолжать развивать данный подход
-- Попробовать сделать обратный к slug процесс, для получениях исходных названий товаров, стемминг для полученных данных и категорий и повторное сравнение по iou
-- Получить эмбединги с помощью tf-idf и сравнить вектора с помощью косинусной близости
-
-#### Гипотеза 2. Попробовать все-таки обкачать данные
-Подход не совсем правильный, т.к. непонятно сколько есть времени на категоризацию товара, т.к. есть временные затраты на получения страницы + ее дальнейшая обработка
-- Попробовать по ссылкам из датасета получить текст страницы, произвести предобработку и попробовать полученный текст сравнить по косинусной близости
-
-
-#### Гипотеза 3. Комбинированный подход по url и тексту продукта
-Если не удалось получить информацию по url, то категоризаци по url, учет и url и информации с сайта, информация с сайта, если информации из url недостаточно или не остается ключевых слов после обработки
+## Что используется?
+- Mlflow - Трекинг экспериментов, версионирование моделей
+- PostgresDB - (mlflow db)
+- S3 - Хранение данных, моделей
+- DVC - Версионирование данных, .ipynb ноутбуков
+- FastAPI - API для запросов к модели и бизнесс-сервису
+- Prometheus - TS база данных для хранения метрик работы API's
+- Grafana - Визуализация данных полученных из Prometheus
+- Alertmanager - Алертменеджер, отправляет нотификейшн в телегу
+## Как поднять проект
+- Создать .env файл указав все необходимые переменные для старта
+- Создать файл в папке alertmanager/.bot_token
+- Выполнить команду docker-compose up -d --build

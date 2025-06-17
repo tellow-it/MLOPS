@@ -1,0 +1,18 @@
+{{ define "telegram.default.message" }}
+{{- if .Alerts.Firing -}}
+{{- range .Alerts.Firing }}
+<b>🚨 Alert:</b> {{ .Annotations.summary }}
+<b>Description:</b> {{ .Annotations.description }}
+<b>Severity:</b> {{ .Labels.severity }}
+<b>Starts At:</b> {{ .StartsAt }}
+{{- end }}
+{{- end }}
+{{- if .Alerts.Resolved -}}
+{{- range .Alerts.Resolved }}
+<b>✅ Resolved:</b> {{ .Annotations.summary }}
+<b>Description:</b> {{ .Annotations.description }}
+<b>Severity:</b> {{ .Labels.severity }}
+<b>Ends At:</b> {{ .EndsAt }}
+{{- end }}
+{{- end }}
+{{- end }}

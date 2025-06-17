@@ -1,0 +1,40 @@
+groups:
+  - name: Model Service API alerts
+    rules:
+      - alert: ModelServiceAPIHighLatency
+        expr: http_request_duration_seconds_bucket{job="model_service_api", le="1", method="POST", path="/predict"} > 5
+        for: 1m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Высокая задержка на /predict"
+          description: "Более 5 медленных запросов за последние 60 секунд."
+
+      - alert: ModelServiceAPIDown
+        expr: up{job="model_service_api"} == 0
+        for: 1m
+        labels:
+          severity: critical
+        annotations:
+          summary: "ModelServiceAPI недоступен"
+          description: "Prometheus не может опросить ModelServiceAPI сервис"
+
+  - name: Business Service API alerts
+    rules:
+      - alert: BusinessServiceAPIHighLatency
+        expr: http_request_duration_seconds_bucket{job="business_service_api", le="1", method="POST", path="/predict-by-url"} > 5
+        for: 1m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Высокая задержка на /predict-by-url"
+          description: "Более 5 медленных запросов за последние 60 секунд."
+
+      - alert: BusinessServiceAPIDown
+        expr: up{job="business_service_api"} == 0
+        for: 1m
+        labels:
+          severity: critical
+        annotations:
+          summary: "BusinessServiceAPI недоступен"
+          description: "Prometheus не может опросить BusinessServiceAPI сервис"

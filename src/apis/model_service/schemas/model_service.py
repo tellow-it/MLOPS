@@ -1,12 +1,10 @@
-from typing import Optional
-
 from pydantic import BaseModel
 
 
 class TextImageSchema(BaseModel):
     text: str
-    image_base64: Optional[str] = None
+    image_base64: str | None = None
 
 
 class PredictionSchema(BaseModel):
-    category: Optional[str] = None
+    category: str | None = None
